@@ -24,17 +24,35 @@ export function createScene(renderer: WebGLRenderer) {
     20,
   )
 
-  const boxGeometry = new BoxBufferGeometry(1, 1, 1);
-  const boxMaterial = new MeshBasicMaterial({ color: 0xff0000 });
-  const box = new Mesh(boxGeometry, boxMaterial);
-  box.position.z = -3;
+  /**
+   * Add some simple ambient lights to illuminate the model.
+   */
+  const ambientLight = new AmbientLight(0xffffff, 1.0);
+  scene.add(ambientLight);
 
-  scene.add(box);
+  // const boxGeometry = new BoxBufferGeometry(1, 1, 1);
+  // const boxMaterial = new MeshBasicMaterial({ color: 0xff0000 });
+  // const box = new Mesh(boxGeometry, boxMaterial);
+  // box.position.z = -3;
+
+  // scene.add(box);
+
+  const gltfLoader = new GLTFLoader();
+
+  let gModel: Object3D;
+  
+
+  gltfLoader.load("../assets/models/G.glb", (gltf: GLTF) => {
+    gModel = gltf.scene.children[0];
+    gModel.position.z = -3;
+    gModel.position.y = -1;
+    scene.add(gModel);
+  });
 
   const renderLoop = (timestamp: number, frame?: XRFrame) => {
     // Rotate box
-    box.rotation.y += 0.01;
-    box.rotation.x += 0.01;
+    // gModel.rotation.y += 0.01;
+    // gModel.rotation.z += 0.01; 
 
     if (renderer.xr.isPresenting) {
       renderer.render(scene, camera);
